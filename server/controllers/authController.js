@@ -4,14 +4,13 @@ const bcrypt = require('bcryptjs');
 
 exports.signup = async (req, res) => {
 
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    await User.create({ email, password: hashedPassword });
-    
+    const newUser =  await User.create({ email, password: hashedPassword, name } );
     // Send JSON back to frontend
-    res.status(201).json({ message: 'Signup successful, please login' });
+    res.status(201).json({ message: 'Signup successful, please login', user: newUser });
   } catch (err) {
 
        // Handle unique constraint (duplicate email)
@@ -22,7 +21,7 @@ exports.signup = async (req, res) => {
     // Handle validation errors (like empty fields, wrong formats)
     if (err.name === 'SequelizeValidationError') {
       const messages = err.errors.map(e => e.message); // collect all validation messages
-      return res.status(400).json({ message: messages.join(', ') });
+      return res.status(400).json({ message: messages.join('***') });
     }
 
     // General fallback error
@@ -56,13 +55,25 @@ exports.login = async (req, res) => {
     // Save session
     req.session.user = {
       id: user.id,
-      email: user.email
+      email: user.email,
+      
     };
 
-    res.status(200).json({ message: "Logged in successfully" });
+    req.session.save()
+    res.status(200).json({ message: "Logged in successfully" , user});
   } catch (err) {
-    console.error("Login error:", err);
     res.status(500).json({ message: "Server error, please try again later" });
   }
 };
 
+
+exports.currentUser = async (req, res) =>{
+  console.log(req.session)
+    if (req.session.user) {
+              res.json({ user: req.session.user });
+
+        res.json({ user: req.session.user });
+    } else {
+        res.status(401).json({ message: 'Not logged in' });
+    }
+};

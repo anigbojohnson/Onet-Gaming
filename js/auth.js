@@ -66,7 +66,16 @@ $(document).on("submit", "#loginForm", function(e) {
     data: JSON.stringify(data),
   })
   .done(res => {
-    $("#loginMessage").html(`<span class="text-success">${res.message}</span>`);
+            // Show success message
+        $("#loginMessage").html(`<span class="text-success">${res.message}</span>`);
+
+        // Hide login/signup links
+        $("#loginLinks, #signupLinks").hide();
+
+        // Show user name
+        console.log(res)
+        $("#userDisplay").text(res.user.name);
+        $("#userName").show();
   })
   .fail(err => {
     $("#loginMessage").html(`<span class="text-danger">${err.responseJSON.message}</span>`);
@@ -84,7 +93,7 @@ $(document).on("submit", "#signupForm", function(e) {
     password: $("#signupPassword").val()
   };
 
-  const errors = validateData(data, rules.signup);
+  const errors = "" 
   if (Object.keys(errors).length > 0) {
     displayErrors(errors, "signup");
     return;
@@ -94,13 +103,34 @@ $(document).on("submit", "#signupForm", function(e) {
     url: "http://localhost:3000/api/signup",
     method: "POST",
     contentType: "application/json",
-    data: JSON.stringify(data)
+    data: JSON.stringify(data),
+    withCredentials: true
   })
   .done(res => {
   $("#signupMessage").html(`<span class="text-success">${res.message}</span>`);
  })
 .fail(err => {
-  console.log(err)
-  $("#signupMessage").html(`<span class="text-danger">${err.responseJSON.message}</span>`);
+            // Split the message by comma if multiple messages are joined
+        const messages = err.responseJSON.message.split('***').map(msg => msg.trim());
+
+        console.log(messages)
+        const html = '<ul class="text-danger">' + 
+                     messages.map(msg => `<li>${msg}</li>`).join('') + 
+                     '</ul>';
+
+        $("#signupMessage").html(html);
+    
 })
 });
+
+
+
+// Example using jQuery
+$.get('http://localhost:3000/api/current-user', { withCredentials: true })
+  .done(res => {
+    $('#username').text(res.user.name); // show user name
+    $('#loginLinks').hide();            // hide login/signup
+  })
+  .fail(() => {
+    $('#loginLinks').show();            // show login/signup
+  });

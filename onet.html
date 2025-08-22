@@ -64,19 +64,24 @@
           </ul>
         </li>
       </ul>
-        
-        <!-- Login & Signup on the right -->
+        <!-- Navbar -->
+    <ul class="nav navbar-nav navbar-right">
+      <li id="loginLinks">
+        <a href="#" data-toggle="modal" data-target="#loginModal">
+          <i class="bi bi-box-arrow-in-right"></i> Login
+        </a>
+      </li>
+      <li id="signupLinks">
+        <a href="#" data-toggle="modal" data-target="#signupModal">
+          <i class="bi bi-person-plus-fill"></i> Sign Up
+        </a>
+      </li>
+      <!-- User name placeholder -->
+      <li id="userName" style="display:none;">
+        <a href="#"><i class="bi bi-person-circle"></i> <span id="userDisplay"></span></a>
+      </li>
+    </ul>
 
-
-<!-- Navbar (keep your existing code, just update links) -->
-<ul class="nav navbar-nav navbar-right">
-  <li><a href="#" data-toggle="modal" data-target="#loginModal">
-    <i class="bi bi-box-arrow-in-right"></i> Login
-  </a></li>
-  <li><a href="#" data-toggle="modal" data-target="#signupModal">
-    <i class="bi bi-person-plus-fill"></i> Sign Up
-  </a></li>
-</ul>
 
 <!-- Login Modal -->
 <div id="loginModal" class="modal fade" role="dialog">
@@ -87,7 +92,7 @@
         <h4 class="modal-title">Login</h4>
       </div>
       <div class="modal-body">
-        <div id="loginMessage" class="text-center mb-4"></div>
+        <div id="loginMessage" class="mb-4"></div>
         <form id="loginForm">
           <div class="form-group">
             <label for="loginEmail">Email:</label>
@@ -115,7 +120,7 @@
         <h4 class="modal-title">Sign Up</h4>
       </div>
       <div class="modal-body">
-        <div id="signupMessage" class="text-center mb-3"></div>
+        <div id="signupMessage" class="mb-3"></div>
         <form id="signupForm">
             <div class="form-group">
               <label for="signupName">Full Name:</label>
