@@ -60,22 +60,27 @@ $(document).on("submit", "#loginForm", function(e) {
   }
 
   $.ajax({
-    url: "http://localhost:3000/api/login",
+    url: "http://localhost:3000/auth/login",
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(data),
+    xhrFields: {
+      withCredentials: true   // 👈 Correct way in jQuery
+    }
   })
   .done(res => {
-            // Show success message
-        $("#loginMessage").html(`<span class="text-success">${res.message}</span>`);
+    // Show success message
+    $("#loginMessage").html(`<span class="text-success">${res.message}</span>`);
 
-        // Hide login/signup links
-        $("#loginLinks, #signupLinks").hide();
+    // Hide login/signup links
+    $("#loginLinks, #signupLinks").hide();
 
-        // Show user name
-        console.log(res)
-        $("#userDisplay").text(res.user.name);
-        $("#userName").show();
+    // Show user name
+    $("#userDisplay").text(res.user.name);
+    
+  // Hide logout link, show login link
+  $("#logoutNav").show();
+    $("#userName").show();
   })
   .fail(err => {
     $("#loginMessage").html(`<span class="text-danger">${err.responseJSON.message}</span>`);
@@ -100,11 +105,13 @@ $(document).on("submit", "#signupForm", function(e) {
   }
 
   $.ajax({
-    url: "http://localhost:3000/api/signup",
+    url: "http://localhost:3000/auth/signup",
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(data),
-    withCredentials: true
+    xhrFields: {
+      withCredentials: true 
+    }
   })
   .done(res => {
   $("#signupMessage").html(`<span class="text-success">${res.message}</span>`);
@@ -125,12 +132,56 @@ $(document).on("submit", "#signupForm", function(e) {
 
 
 
-// Example using jQuery
-$.get('http://localhost:3000/api/current-user', { withCredentials: true })
-  .done(res => {
-    $('#username').text(res.user.name); // show user name
-    $('#loginLinks').hide();            // hide login/signup
-  })
-  .fail(() => {
-    $('#loginLinks').show();            // show login/signup
-  });
+
+$.ajax({
+  url: "http://localhost:3000/auth/current-user",
+  method: "GET",
+  xhrFields: {
+    withCredentials: true   // 👈 required for session cookies
+  }
+})
+.done(res => {
+  // Show success message
+  $("#loginMessage").html(`<span class="text-success">Welcome back, ${res.user.name}</span>`);
+
+  // Hide login/signup links
+  $("#loginLinks, #signupLinks").hide();
+
+  // Hide logout link, show login link
+    $("#logoutNav, #userName").show();
+
+  // Show user name
+  $("#userDisplay").text(res.user.name);
+
+})
+.fail(() => {
+  // Not logged in → show login/signup
+  $('#loginLinks, #signupLinks').show();
+  $("#logoutNav, #userName").hide();
+
+});
+
+
+    $("#logoutLink").on("click", function(e) {
+      e.preventDefault(); // prevent default link behavior
+
+      $.ajax({
+        url: "http://localhost:3000/auth/logout", // your logout endpoint
+        method: "POST", // safer to use POST
+        xhrFields: {
+          withCredentials: true // include the cookie
+        }
+      })
+      .done(() => {
+        // Hide logout link, show login link
+        $("#logoutNav, #userName").hide();
+          
+        // show login/signup links
+        $("#loginLinks, #signupLinks").show();
+
+      })
+      .fail(err => {
+        console.error("Logout failed:", err);
+        alert("Could not log out. Try again.");
+      });
+    });

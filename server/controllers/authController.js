@@ -53,14 +53,17 @@ exports.login = async (req, res) => {
     }
 
     // Save session
-    req.session.user = {
-      id: user.id,
-      email: user.email,
-      
-    };
+    req.session.user = { id: user.id, name: user.name,email: user.email };
 
-    req.session.save()
-    res.status(200).json({ message: "Logged in successfully" , user});
+
+      req.session.save(err => {
+      if (err) {
+          console.log('Session save error:', err);
+          return res.status(500).json({ message: 'Session error' });
+      }
+      res.json({ message: 'Login successful', user});
+      });
+
   } catch (err) {
     res.status(500).json({ message: "Server error, please try again later" });
   }
@@ -68,12 +71,27 @@ exports.login = async (req, res) => {
 
 
 exports.currentUser = async (req, res) =>{
-  console.log(req.session)
+
     if (req.session.user) {
               res.json({ user: req.session.user });
-
-        res.json({ user: req.session.user });
     } else {
         res.status(401).json({ message: 'Not logged in' });
     }
 };
+
+
+exports.logoutUser = async (req, res) => {
+  console.log(req.session)
+  req.session.destroy(err => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res.status(500).send("Could not log out.");
+    }
+
+    // Clear the cookie
+    res.clearCookie('connect.sid');  
+   return res.status(200).json("");
+
+  });
+}
+

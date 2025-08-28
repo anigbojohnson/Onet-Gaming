@@ -83,157 +83,75 @@ function shaffleOnet(){
 
 
 }
-function partern(value){
 
-  for(let index=0; ;index++){
-    if(rectangle.length==0){
-      break;
-    }
-    rectangle.pop();
-  }
-  if(value==="one"){
-//
-const colors = [
-  ["#f0f0f0", "red", "yellow", "yellow", "#f0f0f0", "#f0f0f0", "#800000", "#800000"],
-  ["#f0f0f0", "#00cc00", "blue", "blue", "#33ffff", "#800000", "#f0f0f0", "#f0f0f0"],
-  ["red", "yellow", "red", "#FFC0CB", "#FFC0CB", "#33ffff", "#00cc00", "#f0f0f0"],
-  ["red", "black", "yellow", "yellow", "#FFC0CB", "#FFC0CB", "red", "#800000"],
-  ["red", "black", "#00cc00", "#FFC0CB", "#00cc00", "#33ffff", "#00cc00", "#f0f0f0"],
-  ["red", "black", "yellow", "#33ffff", "#00cc00", "blue", "blue", "#f0f0f0"],
-  ["#800000", "#800000", "#00cc00", "#FFC0CB", "#f0f0f0", "#33ffff", "black", "#f0f0f0"],
-  ["#f0f0f0", "#00cc00", "#33ffff", "#FFC0CB", "#FFC0CB", "blue", "yellow", "#f0f0f0"],
-  ["red", "yellow", "blue", "#f0f0f0", "#FFC0CB", "#FFC0CB", "#f0f0f0", "#f0f0f0"],
-];
 
-const rectangle = [];
 
-colors.forEach((row, rowIndex) => {
-  row.forEach((color, colIndex) => {
-    const x = colIndex * 50;
-    const y = rowIndex * 50;
-    const rect = new Rectangle(x, y, size, size, color, rowIndex + 1, -1, rowIndex, colIndex);
+function partern(value) {
+  // clear rectangles
+  rectangle.length = 0;
 
-    // If it's "#f0f0f0", use updateDrawRectangle, else drawRectangle
-    if (color === "#f0f0f0") {
-      rect.updateDrawRectangle(ctx);
-    } else {
-      rect.drawRectangle(ctx);
-    }
+  // color patterns
+  const patterns = {
+    one: [
+      ["#f0f0f0", "red", "yellow", "yellow", "#f0f0f0", "#f0f0f0", "#800000", "#800000"],
+      ["#f0f0f0", "#00cc00", "blue", "blue", "#33ffff", "#800000", "#f0f0f0", "#f0f0f0"],
+      ["red", "yellow", "red", "#FFC0CB", "#FFC0CB", "#33ffff", "#00cc00", "#f0f0f0"],
+      ["red", "black", "yellow", "yellow", "#FFC0CB", "#FFC0CB", "red", "#800000"],
+      ["red", "black", "#00cc00", "#FFC0CB", "#00cc00", "#33ffff", "#00cc00", "#f0f0f0"],
+      ["red", "black", "yellow", "#33ffff", "#00cc00", "blue", "blue", "#f0f0f0"],
+      ["#800000", "#800000", "#00cc00", "#FFC0CB", "#f0f0f0", "#33ffff", "black", "#f0f0f0"],
+      ["#f0f0f0", "#00cc00", "#33ffff", "#FFC0CB", "#FFC0CB", "blue", "yellow", "#f0f0f0"],
+      ["red", "yellow", "blue", "#f0f0f0", "#FFC0CB", "#FFC0CB", "#f0f0f0", "#f0f0f0"]
+    ],
+    two: [
+      ["yellow", "#00cc00", "#33ffff", "#f0f0f0", "#800000", "#f0f0f0", "red", "#f0f0f0"],
+      ["red", "blue", "red", "blue", "#33ffff", "#800000", "#00cc00", "yellow"],
+      ["blue", "#00cc00", "#33ffff", "#FFC0CB", "black", "#f0f0f0", "yellow", "#800000"],
+      ["#f0f0f0", "#f0f0f0", "#f0f0f0", "yellow", "#00cc00", "black", "#FFC0CB", "#f0f0f0"],
+      ["red", "#800000", "blue", "#FFC0CB", "#800000", "yellow", "#f0f0f0", "#f0f0f0"],
+      ["red", "black", "#33ffff", "red", "black", "yellow", "yellow", "#f0f0f0"],
+      ["red", "#800000", "#FFC0CB", "#FFC0CB", "#f0f0f0", "#f0f0f0", "#f0f0f0", "black"],
+      ["#00cc00", "#00cc00", "#f0f0f0", "#f0f0f0", "#f0f0f0", "blue", "blue", "#f0f0f0"],
+      ["#33ffff", "#33ffff", "blue", "blue", "#800000", "#800000", "#f0f0f0", "#f0f0f0"]
+    ],
+    three: [
+      ["#f0f0f0","#f0f0f0","#33ffff","#33ffff","yellow","red","red","#800000"],
+      ["#f0f0f0","#FFC0CB","#FFC0CB","#33ffff","#00cc00","#00cc00","black","#f0f0f0"],
+      ["#FFC0CB","blue","#800000","#FFC0CB","#33ffff","black","blue","blue"],
+      ["#f0f0f0","#f0f0f0","#800000","yellow","red","#f0f0f0","#f0f0f0","#f0f0f0"],
+      ["red","red","yellow","yellow","#00cc00","yellow","#33ffff","#33ffff"],
+      ["#f0f0f0","#FFC0CB","black","#800000","black","#800000","red","#f0f0f0"],
+      ["#f0f0f0","#f0f0f0","#f0f0f0","#FFC0CB","#00cc00","yellow","yellow","#FFC0CB"],
+      ["red","yellow","#33ffff","#FFC0CB","#FFC0CB","blue","yellow","#f0f0f0"],
+      ["black","#800000","#f0f0f0","yellow","#f0f0f0","#00cc00","#FFC0CB","#FFC0CB"]
+    ]
+  };
 
-    rectangle.push(rect);
+  const colors = patterns[value];
+  if (!colors) return;
+
+  // build rectangles
+  colors.forEach((row, r) => {
+    row.forEach((color, c) => {
+      const rect = new Rectangle(c * size, r * size, size, size, color, r + 1, -1, r, c);
+      if (color === "#f0f0f0") rect.updateDrawRectangle(ctx);
+      else rect.drawRectangle(ctx);
+      rectangle.push(rect);
+    });
   });
-});
 
-// "red", "black","yellow","#FFC0CB","#33ffff", "#00cc00","blue", "#800000","#f0f0f0"
-$('#myMatrix tr').each(function(row, tr){
-    TableData[row]={
-        "0" : $(tr).find('td:eq(1)').text()
-        , "1" :$(tr).find('td:eq(2)').text()
-        , "2" : $(tr).find('td:eq(3)').text()
-        , "3" : $(tr).find('td:eq(4)').text()
-        ,"4" : $(tr).find('td:eq(5)').text()
-        , "5" :$(tr).find('td:eq(6)').text()
-        , "6" : $(tr).find('td:eq(7)').text()
-        , "7" : $(tr).find('td:eq(8)').text()
-    }
-});
-
-TableData.shift();
-console.log(TableData);
-console.log(rectangle.length);
-console.log(rectangle);
-}
-if(value=="two"){
-
-
-const colors = [
-  ["yellow", "#00cc00", "#33ffff", "#f0f0f0", "#800000", "#f0f0f0", "red", "#f0f0f0"],
-  ["red", "blue", "red", "blue", "#33ffff", "#800000", "#00cc00", "yellow"],
-  ["blue", "#00cc00", "#33ffff", "#FFC0CB", "black", "#f0f0f0", "yellow", "#800000"],
-  ["#f0f0f0", "#f0f0f0", "#f0f0f0", "yellow", "#00cc00", "black", "#FFC0CB", "#f0f0f0"],
-  ["red", "#800000", "blue", "#FFC0CB", "#800000", "yellow", "#f0f0f0", "#f0f0f0"],
-  ["red", "black", "#33ffff", "red", "black", "yellow", "yellow", "#f0f0f0"],
-  ["red", "#800000", "#FFC0CB", "#FFC0CB", "#f0f0f0", "#f0f0f0", "#f0f0f0", "black"],
-  ["#00cc00", "#00cc00", "#f0f0f0", "#f0f0f0", "#f0f0f0", "blue", "blue", "#f0f0f0"],
-  ["#33ffff", "#33ffff", "blue", "blue", "#800000", "#800000", "#f0f0f0", "#f0f0f0"],
-];
-
-const rectangle = [];
-
-colors.forEach((row, rowIndex) => {
-  row.forEach((color, colIndex) => {
-    const x = colIndex * 50;
-    const y = rowIndex * 50;
-    const rect = new Rectangle(x, y, size, size, color, rowIndex + 1, -1, rowIndex, colIndex);
-
-    // if "#f0f0f0" → updateDrawRectangle, otherwise drawRectangle
-    if (color === "#f0f0f0") {
-      rect.updateDrawRectangle(ctx);
-    } else {
-      rect.drawRectangle(ctx);
-    }
-
-    rectangle.push(rect);
+  // extract table data
+  $('#myMatrix tr').each(function(row, tr) {
+    TableData[row] = {};
+    $(tr).find('td:gt(0)').each(function(i, td) {
+      TableData[row][i] = $(td).text();
+    });
   });
-});
 
-
-$('#myMatrix tr').each(function(row, tr){
-    TableData[row]={
-        "0" : $(tr).find('td:eq(1)').text()
-        , "1" :$(tr).find('td:eq(2)').text()
-        , "2" : $(tr).find('td:eq(3)').text()
-        , "3" : $(tr).find('td:eq(4)').text()
-        ,"4" : $(tr).find('td:eq(5)').text()
-        , "5" :$(tr).find('td:eq(6)').text()
-        , "6" : $(tr).find('td:eq(7)').text()
-        , "7" : $(tr).find('td:eq(8)').text()
-    }
-});
-
-TableData.shift();
+  TableData.shift();
 }
-if(value=="three"){
 
-  const colors = [
-  ["#f0f0f0","#f0f0f0","#33ffff","#33ffff","yellow","red","red","#800000"],
-  ["#f0f0f0","#FFC0CB","#FFC0CB","#33ffff","#00cc00","#00cc00","black","#f0f0f0"],
-  ["#FFC0CB","blue","#800000","#FFC0CB","#33ffff","black","blue","blue"],
-  ["#f0f0f0","#f0f0f0","#800000","yellow","red","#f0f0f0","#f0f0f0","#f0f0f0"],
-  ["red","red","yellow","yellow","#00cc00","yellow","#33ffff","#33ffff"],
-  ["#f0f0f0","#FFC0CB","black","#800000","black","#800000","red","#f0f0f0"],
-  ["#f0f0f0","#f0f0f0","#f0f0f0","#FFC0CB","#00cc00","yellow","yellow","#FFC0CB"],
-  ["red","yellow","#33ffff","#FFC0CB","#FFC0CB","blue","yellow","#f0f0f0"],
-  ["black","#800000","#f0f0f0","yellow","#f0f0f0","#00cc00","#FFC0CB","#FFC0CB"]
-];
 
-const rectangles = [];
-const size = 50; // assuming your cell size
-
-colors.forEach((row, r) => {
-  row.forEach((color, c) => {
-    const rect = new Rectangle(c * size, r * size, size, size, color, r + 1, -1, r, c);
-    rect.updateDrawRectangle?.(ctx) || rect.drawRectangle(ctx);
-    rectangles.push(rect);
-  });
-});
-
-$('#myMatrix tr').each(function(row, tr){
-    TableData[row]={
-        "0" : $(tr).find('td:eq(1)').text()
-        , "1" :$(tr).find('td:eq(2)').text()
-        , "2" : $(tr).find('td:eq(3)').text()
-        , "3" : $(tr).find('td:eq(4)').text()
-        ,"4" : $(tr).find('td:eq(5)').text()
-        , "5" :$(tr).find('td:eq(6)').text()
-        , "6" : $(tr).find('td:eq(7)').text()
-        , "7" : $(tr).find('td:eq(8)').text()
-    }
-});
-
-TableData.shift();
-}
-}
 function increaseOjectSize(val){
 if(val === "one"){
      value =1;

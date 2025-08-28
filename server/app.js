@@ -22,7 +22,7 @@ app.use(cors({
 
 const store = new SequelizeStore({
   db: sequelize,
-  tableName: "Session",  // 👈 correct
+  tableName: "Session",  
 });
 
 app.use(session({
@@ -33,7 +33,7 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 1 day
     httpOnly: true,
-    sameSite: 'none',
+    sameSite: 'lax',
     secure: false, // set true if HTTPS
   }
 }));
@@ -41,6 +41,6 @@ app.use(session({
 // Make sure table exists
 store.sync();
 
-app.use('/api', authRoutes);
+app.use('/auth', authRoutes);
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));
